@@ -15,9 +15,6 @@ var e = createMux()
 
 func main() {
 	e.GET("/", articleIndex)
-	e.GET("/new", articleNew)
-  e.GET("/:id", articleShow)
-   e.GET("/:id/edit", articleEdit)
 
 	e.Logger.Fatal(e.Start(":8180"))
 }
@@ -39,9 +36,8 @@ func createMux() *echo.Echo {
 
 func articleIndex(c echo.Context) error {
 	data := map[string]interface{}{
-		"message": "Hello World",
-		"Message": "Article Index",
-		"Now" : time.Now(),
+		"Message": "Hello World!",
+		"Now":     time.Now(),
 	}
 	return render(c, "article/index.html", data)
 }
@@ -51,10 +47,11 @@ func htmlBlob(file string, data map[string]interface{}) ([]byte, error) {
 }
 
 func articleNew(c echo.Context) error {
-	data := map[string]interface{} {
-		"Message": "Article Index",
-		"Now" : time.Now(),
+	data := map[string]interface{}{
+		"Message": "Article New",
+		"Now":     time.Now(),
 	}
+
 	return render(c, "article/new.html", data)
 }
 
