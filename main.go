@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -11,7 +10,24 @@ import (
 var e = createMux()
 
 func main() {
-	fmt.Println("Hello World")
+	e.GET("/", articleIndex)
 
-		e.GET("index")
+	e.Logger.Fatal(e.Start(":8180"))
+}
+
+func createMux() *echo.Echo {
+	// アプリケーションインスタンスの生成
+	e := echo.New()
+
+	// アプリケーションに各種ミドルウェアを設定
+	e.Use(middleware.Recover())
+	e.Use(middleware.Logger())
+	e.Use(middleware.Gzip())
+
+	// アプリケーションインスタンスを返却
+	return e
+}
+
+func articleIndex(c echo.Context) error {
+	return c.String(http.StatusOK, "Hello, World!")
 }
