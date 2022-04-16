@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/flosch/pongo2"
@@ -14,6 +15,9 @@ var e = createMux()
 
 func main() {
 	e.GET("/", articleIndex)
+	e.GET("/new", articleNew)
+  e.GET("/:id", articleShow)
+   e.GET("/:id/edit", articleEdit)
 
 	e.Logger.Fatal(e.Start(":8180"))
 }
@@ -36,6 +40,7 @@ func createMux() *echo.Echo {
 func articleIndex(c echo.Context) error {
 	data := map[string]interface{}{
 		"message": "Hello World",
+		"Message": "Article Index",
 		"Now" : time.Now(),
 	}
 	return render(c, "article/index.html", data)
@@ -43,6 +48,38 @@ func articleIndex(c echo.Context) error {
 
 func htmlBlob(file string, data map[string]interface{}) ([]byte, error) {
 	return pongo2.Must(pongo2.FromCache(tmplPath + file)).ExecuteBytes(data)
+}
+
+func articleNew(c echo.Context) error {
+	data := map[string]interface{} {
+		"Message": "Article Index",
+		"Now" : time.Now(),
+	}
+	return render(c, "article/new.html", data)
+}
+
+func articleShow(c echo.Context) error {
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	data := map[string]interface{}{
+		"Message": "Article Show",
+		"Now":     time.Now(),
+		"ID":      id,
+	}
+
+	return render(c, "article/show.html", data)
+}
+
+func articleEdit(c echo.Context) error {
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	data := map[string]interface{}{
+		"Message": "Article Edit",
+		"Now":     time.Now(),
+		"ID":      id,
+	}
+
+	return render(c, "article/edit.html", data)
 }
 
 func render(c echo.Context, file string, data map[string]interface{}) error {
