@@ -1,20 +1,37 @@
 package main
 
 import (
+	"fmt"
+	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
 	"github.com/flosch/pongo2"
+	_ "github.com/go-sql-driver/mysql" // Using MySQL driver
+	"github.com/jmoiron/sqlx"
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
 const tmplPath = "src/template/"
+var db *sqlx.DB
 var e = createMux()
 
 func main() {
+	err := godotenv.Load(".env")
+	if err != nil {
+		// .env読めなかった場合の処理
+}
+	db = connectDB()
+
 	e.GET("/", articleIndex)
+	e.GET("/", articleIndex)
+	e.GET("/new", articleNew)
+	e.GET("/:id", articleShow)
+	e.GET("/:id/edit", articleEdit)
 
 	e.Logger.Fatal(e.Start(":8180"))
 }
@@ -32,6 +49,20 @@ func createMux() *echo.Echo {
 	e.Static("/js", "src/js")
 	// アプリケーションインスタンスを返却
 	return e
+}
+
+func connectDB() *sqlx.DB {
+	dsn := os.Getenv("DSN")
+	fmt.Println(dsn)
+	db, err := sqlx.Open("mysql", dsn)
+	if err != nil {
+		e.Logger.Fatal(err)
+	}
+	if err := db.Ping(); err != nil {
+		e.Logger.Fatal(err)
+}
+log.Println("db connection succeeded")
+return db
 }
 
 func articleIndex(c echo.Context) error {
