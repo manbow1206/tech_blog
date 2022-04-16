@@ -1,14 +1,17 @@
 package repository
 
-import "blog/model"
+import (
+	"blog/model"
+)
 
+// ArticleList ...
 func ArticleList() ([]*model.Article, error) {
-	query := `SELECT * FROM  article`
+	query := `SELECT * FROM articles;`
 
-	var article []*model.Article
-	if err := db.Select(&article, query); err !=nil {
+	var articles []*model.Article
+	if err := db.Select(&articles, query); err != nil {
 		return nil, err
 	}
 
-	return article, nil
+	return articles, nil
 }
