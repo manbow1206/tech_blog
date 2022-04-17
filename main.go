@@ -61,12 +61,12 @@ func connectDB() *sqlx.DB {
 	return db
 }
 
- // CustomValidator ...
- type CustomValidator struct {
+// CustomValidator ...
+type CustomValidator struct {
 	validator *validator.Validate
 }
 
-  // Validate ...
-  func (cv *CustomValidator) Validate(i interface{}) error {
-    return cv.validator.Struct(i)
-  }
+// Validate ...
+func (cv *CustomValidator) Validate(i interface{}) error {
+	return cv.validator.Struct(i)
+}

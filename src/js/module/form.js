@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const articleFormPreview = document.querySelector('.article-form__preview');
   const articleFormBodyTextArea = document.querySelector('.article-form__input--body');
   const articleFormPreviewTextArea = document.querySelector('.article-form__preview-body-contents');
+  const errors = document.querySelector('.article-form__errors');
+  const errorTmpl = document.querySelector('.article-form__error-tmpl').firstElementChild;
 
    // CSRF トークンを取得します。
    const csrfToken = document.getElementsByName('csrf')[0].content;
@@ -80,6 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
    saveBtn.addEventListener('click', event => {
     event.preventDefault();
 
+    // 前回のバリデーションエラーの表示が残っている場合は削除します。
+    errors.innerHTML = null;
+
     // フォームに入力された内容を取得します。
     const fd = new FormData(form);
 
@@ -105,8 +110,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (body.ValidationErrors) {
           // バリデーションエラーがある場合の処理をここに記載します。
+          showErrors(body.ValidationErrors)
         }
       })
       .catch(err => console.error(err));
   });
+
+  const showErrors = messages => {
+    if (Array.isArray(messages) && messages.length != 0) {
+      const fragment = document.createDocumentFragment();
+
+      messages.forEach(message => {
+        const frag = document.createDocumentFragment();
+        frag.appendChild(errorTmpl.cloneNode(true))
+        frag.querySelector('.article-form__error').innerHTML = message;
+        fragment.appendChild(frag);
+      })
+        // エラーメッセージの表示エリア（要素）にメッセージを追加します。
+        errors.appendChild(fragment);
+    }
+  }
 });
