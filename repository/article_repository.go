@@ -2,6 +2,8 @@ package repository
 
 import (
 	"blog/model"
+	"database/sql"
+	"time"
 )
 
 // ArticleList ...
@@ -14,4 +16,26 @@ func ArticleList() ([]*model.Article, error) {
 	}
 
 	return articles, nil
+}
+
+func ArticleCreate(article *model.Article) (sql.Result, error) {
+
+	now := time.Now()
+
+	article.Created = now
+	article.Updated = now
+
+	query := `INSERT INTO articles (title, body, created, updated)
+  VALUES (:title, :body, :created, :updated);`
+
+	tx := db.MustBegin()
+
+	res, err := tx.NamedExec(query, article)
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	tx.Commit()
+	return res, nil
 }
