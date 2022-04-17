@@ -28,7 +28,7 @@ func main() {
 	e.GET("/:id/edit", handler.ArticleEdit)
 	e.POST("/", handler.ArticleCreate)
 
-	e.Logger.Fatal(e.Start(":3080"))
+	e.Logger.Fatal(e.Start(":4080"))
 }
 
 func createMux() *echo.Echo {
